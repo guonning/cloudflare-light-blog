@@ -43,6 +43,16 @@ async function initDB(env) {
       "SELECT name FROM sqlite_master WHERE type='table' AND name='posts'"
     ).all();
 
+    // 检查并添加 password 列（如果不存在）
+    try {
+      await env.DB.prepare("SELECT password FROM posts LIMIT 1").all();
+    } catch (e) {
+      try {
+        await env.DB.prepare("ALTER TABLE posts ADD COLUMN password TEXT").run();
+        console.log('已添加 password 列');
+      } catch (e2) {}
+    }
+
     if (results.length === 0) {
       console.log('开始创建数据库表...');
       
@@ -93,6 +103,10 @@ async function initDB(env) {
       await env.DB.prepare(
         "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)"
       ).bind('site_description', '一个使用 Cloudflare 构建的博客').run();
+
+      await env.DB.prepare(
+        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)"
+      ).bind('site_favicon', '').run();
 
       // 插入示例文章
       await env.DB.prepare(`
@@ -247,6 +261,21 @@ async function handleAPI(request, env, path) {
       const settings = {};
       results.forEach(s => settings[s.key] = s.value);
       return json(settings);
+    } catch (e) {
+      return json({ error: e.message }, 500);
+    }
+  }
+
+  // 保存设置
+  if (path === '/api/settings' && method === 'POST') {
+    try {
+      const body = await request.json();
+      for (const [key, value] of Object.entries(body)) {
+        await env.DB.prepare(
+          "INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)"
+        ).bind(key, value).run();
+      }
+      return json({ success: true });
     } catch (e) {
       return json({ error: e.message }, 500);
     }
@@ -786,6 +815,7 @@ function getAdminHTML() {
         <div class="toolbar">
           <h2>文章列表</h2>
           <div>
+            <button class="btn" style="margin-right:10px" @click="openSettingsModal">网站设置</button>
             <button class="btn" style="margin-right:10px" @click="openCategoryModal">分类管理</button>
             <button class="btn" @click="openAdd">新建文章</button>
           </div>
@@ -1098,6 +1128,7 @@ function getAdminHTML() {
         });
 
         let categories = ref([]);
+        let settings = ref({});
         
         const loadCategories = async () => {
           try {
@@ -1105,6 +1136,47 @@ function getAdminHTML() {
             categories.value = res.data;
           } catch(e) {}
         };
+        
+        const loadSettings = async () => {
+          try {
+            const res = await api('/api/settings');
+            settings.value = res.data;
+          } catch(e) {}
+        };
+        
+        const settingsModal = ref(false);
+        const settingsForm = ref({ site_name: '', site_description: '', site_favicon: '' });
+        
+        const openSettingsModal = () => {
+          settingsForm.value = { ...settings.value };
+          settingsModal.value = true;
+        };
+        
+        const saveSettings = async () => {
+          try {
+            await api('/api/settings', { method: 'POST', data: settingsForm.value });
+            await loadSettings();
+            settingsModal.value = false;
+          } catch(e) { alert('保存失败'); }
+        };
+        
+        const handleFavicon = async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          const formData = new FormData();
+          formData.append('file', file);
+          const res = await fetch('/api/upload', { method: 'POST', body: formData });
+          const data = await res.json();
+          if (data.url) {
+            settingsForm.value.site_favicon = data.url;
+          }
+        };
+        
+        onMounted(() => { 
+          check(); 
+          loadCategories();
+          loadSettings();
+        });
         
         const categoryModal = ref(false);
         const categoryForm = ref({ name: '' });
@@ -1135,7 +1207,7 @@ function getAdminHTML() {
           loadCategories();
         });
         
-        return { logged, password, login, logout, posts, showModal, editingId, form, coverPreview, toast, uploading, uploadProgress, openAdd, openEdit, handleCoverChange, savePost, deletePost, categories, categoryModal, categoryForm, openCategoryModal, saveCategory, deleteCategory };
+        return { logged, password, login, logout, posts, showModal, editingId, form, coverPreview, toast, uploading, uploadProgress, openAdd, openEdit, handleCoverChange, savePost, deletePost, categories, categoryModal, categoryForm, openCategoryModal, saveCategory, deleteCategory, settings, settingsModal, settingsForm, openSettingsModal, saveSettings, handleFavicon };
       }
     }).mount('#app');
   </script>
