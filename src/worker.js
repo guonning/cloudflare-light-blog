@@ -214,6 +214,30 @@ async function handleAPI(request, env, path) {
     }
   }
 
+  // 分类管理 API
+  if (path === '/api/category' && method === 'POST') {
+    try {
+      const body = await request.json();
+      await env.DB.prepare(
+        "INSERT INTO categories (name, slug, description) VALUES (?, ?, ?)"
+      ).bind(body.name, body.name.toLowerCase().replace(/[^\\w]+/g, '-'), body.description || '').run();
+      return json({ success: true });
+    } catch (e) {
+      return json({ error: e.message }, 500);
+    }
+  }
+
+  if (path.startsWith('/api/category') && method === 'DELETE') {
+    const id = new URL(request.url).searchParams.get('id');
+    if (!id) return json({ error: '缺少id' }, 400);
+    try {
+      await env.DB.prepare("DELETE FROM categories WHERE id=?").bind(id).run();
+      return json({ success: true });
+    } catch (e) {
+      return json({ error: e.message }, 500);
+    }
+  }
+
   if (path === '/api/settings' && method === 'GET') {
     try {
       const { results } = await env.DB.prepare("SELECT * FROM settings").all();
@@ -553,6 +577,9 @@ function getFrontendHTML() {
   <header>
     <h1>我的博客</h1>
     <p>分享技术，记录生活</p>
+    <div style="margin-top:20px">
+      <a href="/" style="color:white;margin:0 10px">全部</a>
+    </div>
   </header>
   <main>
     <div class="post-list" id="app">
@@ -583,6 +610,15 @@ function getFrontendHTML() {
           return d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0');
         };
         
+        // 摘要截取函数
+        const getExcerpt = (content) => {
+          if (!content) return '...';
+          return content.substring(0, 30) + (content.length > 30 ? '...' : '');
+        };
+        
+        // 分类数组
+        const categories = [];
+        
         app.innerHTML = posts.map(post => \`
           <article class="post-card" style="display:flex;flex-direction:row">
             <div style="width:240px;flex-shrink:0;background:#e2e8f0;display:flex;align-items:center;justify-content:center;min-height:180px">
@@ -591,7 +627,7 @@ function getFrontendHTML() {
             <div class="content" style="flex:1;display:flex;flex-direction:column;justify-content:space-between">
               <div>
                 <h2><a href="/post/\${formatDate(post.created_at)}/\${post.id}">\${post.title}</a></h2>
-                <p class="excerpt">\${(post.content || '').substring(0, 30) + '...'}</p>
+                <p class="excerpt">\${getExcerpt(post.content)}</p>
               </div>
               <div>
                 <div class="meta">
@@ -682,7 +718,10 @@ function getAdminHTML() {
       <main class="main">
         <div class="toolbar">
           <h2>文章列表</h2>
-          <button class="btn" @click="openAdd">新建文章</button>
+          <div>
+            <button class="btn" style="margin-right:10px" @click="openCategoryModal">分类管理</button>
+            <button class="btn" @click="openAdd">新建文章</button>
+          </div>
         </div>
         <table>
           <thead>
@@ -780,6 +819,33 @@ function getAdminHTML() {
     </div>
     
     <div v-if="toast" class="toast">{{ toast }}</div>
+    
+    <!-- 分类管理模态框 -->
+    <div v-if="categoryModal" class="modal" @click.self="categoryModal = false">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>分类管理</h3>
+          <button class="modal-close" @click="categoryModal = false">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>新建分类</label>
+            <div style="display:flex;gap:10px">
+              <input v-model="categoryForm.name" placeholder="分类名称" style="flex:1">
+              <input v-model="categoryForm.description" placeholder="描述" style="flex:1">
+              <button @click="saveCategory" class="btn">添加</button>
+            </div>
+          </div>
+          <div style="margin-top:20px">
+            <h4>已有分类</h4>
+            <div v-for="cat in categories" :key="cat.id" style="display:flex;justify-content:space-between;padding:10px;background:#f8fafc;margin-bottom:8px;border-radius:6px">
+              <span>{{ cat.name }}</span>
+              <button @click="deleteCategory(cat.id)" style="color:#dc2626;background:none;border:none;cursor:pointer">删除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -956,7 +1022,46 @@ function getAdminHTML() {
           }
         });
 
-        return { logged, password, login, logout, posts, showModal, editingId, form, coverPreview, toast, uploading, uploadProgress, openAdd, openEdit, handleCoverChange, savePost, deletePost };
+        let categories = ref([]);
+        
+        const loadCategories = async () => {
+          try {
+            const res = await api('/api/categories');
+            categories.value = res.data;
+          } catch(e) {}
+        };
+        
+        const categoryModal = ref(false);
+        const categoryForm = ref({ name: '', description: '' });
+        
+        const openCategoryModal = () => {
+          categoryForm.value = { name: '', description: '' };
+          categoryModal.value = true;
+        };
+        
+        const saveCategory = async () => {
+          try {
+            await api('/api/category', { method: 'POST', data: categoryForm.value });
+            categoryModal.value = false;
+            loadCategories();
+            alert('保存成功');
+          } catch(e) { alert('保存失败'); }
+        };
+        
+        const deleteCategory = async (id) => {
+          if(!confirm('确定删除?')) return;
+          try {
+            await api('/api/category?id='+id, {method:'DELETE'});
+            loadCategories();
+          } catch(e) {}
+        };
+        
+        onMounted(() => { 
+          check(); 
+          loadCategories();
+        });
+        
+        return { logged, password, login, logout, posts, showModal, editingId, form, coverPreview, toast, uploading, uploadProgress, openAdd, openEdit, handleCoverChange, savePost, deletePost, categories, categoryModal, categoryForm, openCategoryModal, saveCategory, deleteCategory };
       }
     }).mount('#app');
   </script>
