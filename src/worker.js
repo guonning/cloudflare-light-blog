@@ -124,6 +124,10 @@ async function initDB(env) {
         "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)"
       ).bind('site_links', '').run();
 
+      await env.DB.prepare(
+        "INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)"
+      ).bind('site_author', '').run();
+
       // 插入示例文章
       await env.DB.prepare(`
         INSERT INTO posts (title, slug, content, excerpt, cover_image, category, tags, status, view_count, created_at, updated_at)
@@ -236,6 +240,7 @@ async function handleAPI(request, env, path) {
 
   if (path === '/api/categories' && method === 'GET') {
     try {
+      await initDB(env);
       const { results } = await env.DB.prepare(
         "SELECT * FROM categories ORDER BY name"
       ).all();
@@ -248,13 +253,15 @@ async function handleAPI(request, env, path) {
   // 获取统计信息
   if (path === '/api/stats' && method === 'GET') {
     try {
-      const postCount = await env.DB.prepare("SELECT COUNT(*) as count FROM posts WHERE status='published'").all();
-      const catCount = await env.DB.prepare("SELECT COUNT(*) as count FROM categories").all();
+      await initDB(env);
+      const postCountResult = await env.DB.prepare("SELECT COUNT(*) as cnt FROM posts WHERE status='published'").first();
+      const catCountResult = await env.DB.prepare("SELECT COUNT(*) as cnt FROM categories").first();
       return json({ 
-        postCount: postCount.results?.[0]?.count || postCount[0]?.count || 0,
-        catCount: catCount.results?.[0]?.count || catCount[0]?.count || 0
+        postCount: postCountResult?.cnt || 0,
+        catCount: catCountResult?.cnt || 0
       });
     } catch (e) {
+      console.error('stats error:', e);
       return json({ postCount: 0, catCount: 0 });
     }
   }
@@ -262,8 +269,9 @@ async function handleAPI(request, env, path) {
   // 友链管理 API
   if (path === '/api/links' && method === 'GET') {
     try {
-      const links = await env.DB.prepare("SELECT * FROM settings WHERE key='site_links'").all();
-      const linksData = links.results?.[0]?.value || links[0]?.value || '';
+      await initDB(env);
+      const links = await env.DB.prepare("SELECT value FROM settings WHERE key='site_links'").first();
+      const linksData = links?.value || '';
       return json(linksData ? JSON.parse(linksData) : []);
     } catch (e) {
       return json([]);
@@ -272,6 +280,7 @@ async function handleAPI(request, env, path) {
 
   if (path === '/api/links' && method === 'POST') {
     try {
+      await initDB(env);
       const body = await request.json();
       await env.DB.prepare("INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)").bind('site_links', JSON.stringify(body)).run();
       return json({ success: true });
@@ -545,7 +554,7 @@ async function handleFrontend(request, env) {
     await initDB(env);
     
     // 获取网站设置
-    let siteSettings = { site_name: '我的博客', site_description: '', site_favicon: '' };
+    let siteSettings = { site_name: '我的博客', site_description: '', site_favicon: '', site_avatar: '', site_bio: '', site_author: '' };
     try {
       const { results } = await env.DB.prepare("SELECT * FROM settings").all();
       results.forEach(s => siteSettings[s.key] = s.value);
@@ -581,7 +590,7 @@ async function handleFrontend(request, env) {
   
   // 首页 - 获取设置
   await initDB(env);
-  let siteSettings = { site_name: '我的博客', site_description: '分享技术，记录生活', site_favicon: '' };
+  let siteSettings = { site_name: '我的博客', site_description: '', site_favicon: '', site_avatar: '', site_bio: '', site_author: '' };
   try {
     const { results } = await env.DB.prepare("SELECT * FROM settings").all();
     results.forEach(s => siteSettings[s.key] = s.value);
@@ -761,7 +770,7 @@ function getFrontendHTML(settings) {
     <aside class="sidebar">
       <div class="profile-card">
         <img id="profile-avatar" class="avatar" src="" alt="头像">
-        <div class="name">${siteName}</div>
+        <div class="name">${settings.site_author || siteName}</div>
         <div id="profile-bio" class="bio"></div>
         <div class="stats">
           <div class="stat-item">
@@ -1065,6 +1074,10 @@ function getAdminHTML() {
             <input v-model="settingsForm.site_name" placeholder="网站标题">
           </div>
           <div class="form-group">
+            <label>个人名称</label>
+            <input v-model="settingsForm.site_author" placeholder="个人名称">
+          </div>
+          <div class="form-group">
             <label>网站副标题</label>
             <input v-model="settingsForm.site_description" placeholder="网站副标题">
           </div>
@@ -1342,7 +1355,7 @@ function getAdminHTML() {
         };
         
         const settingsModal = ref(false);
-        const settingsForm = ref({ site_name: '', site_description: '', site_favicon: '', site_avatar: '', site_bio: '', site_links: '' });
+        const settingsForm = ref({ site_name: '', site_description: '', site_favicon: '', site_avatar: '', site_bio: '', site_links: '', site_author: '' });
         const faviconUploading = ref(false);
         const faviconProgress = ref(0);
         const avatarUploading = ref(false);
