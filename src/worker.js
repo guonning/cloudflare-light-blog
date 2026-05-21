@@ -752,10 +752,12 @@ function getFrontendHTML(settings) {
           const cover = post.cover_image ? '<img src="' + post.cover_image + '" alt="' + post.title + '">' : '<span style="color:#9f927d">暂无封面</span>';
           const tagColors = ['#19c8b9','#f5c31c','#e05a5a','#889df0','#8ac68a','#e59266','#b77dee','#f8a6b2'];
           const tags = post.tags ? post.tags.split(',').map((t,i) => '<span style="display:inline-block;padding:2px 10px;background:' + tagColors[i % tagColors.length] + ';border-radius:50px;font-size:0.75em;color:#fff;font-weight:600;margin-left:6px">' + t.trim() + '</span>').join('') : '';
+          const excerpt = post.content ? post.content.substring(0, 25) + (post.content.length > 25 ? '...' : '') : '';
           return '<article class="post-card">' +
             '<div class="post-cover">' + cover + '</div>' +
             '<div class="post-content">' +
               '<h2><a href="/post/' + formatDate(post.created_at) + '/' + post.id + '">' + post.title + '</a></h2>' +
+              '<p style="color:#725d42;font-size:0.9em;line-height:1.5;margin:8px 0">' + excerpt + '</p>' +
               '<div class="meta">' +
                 '<span>' + post.category + '</span>' +
                 '<span>' + post.view_count + ' 阅读</span>' +
