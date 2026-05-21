@@ -732,9 +732,9 @@ function getFrontendHTML(settings) {
             <div class="stat-label">分类</div>
           </div>
         </div>
-        <h4>📂 分类</h4>
+        <h4>分类</h4>
         <div id="category-list" class="category-list"></div>
-        <h4>🔗 友链</h4>
+        <h4>友链</h4>
         <div id="link-list" class="link-list"></div>
       </div>
     </aside>
@@ -751,13 +751,13 @@ function getFrontendHTML(settings) {
     fetch('/api/categories').then(r=>r.json()).then(cats=>{
       const list = document.getElementById('category-list');
       if(cats && Array.isArray(cats) && cats.length > 0) {
-        list.innerHTML = '<a href="/">🏠 全部</a>' + cats.map(c=>'<a href="/?category='+encodeURIComponent(c.name)+'">📂 '+c.name+'</a>').join('');
+        list.innerHTML = '<a href="/">全部</a>' + cats.map(c=>'<a href="/?category='+encodeURIComponent(c.name)+'">'+c.name+'</a>').join('');
       }
     });
     fetch('/api/links').then(r=>r.json()).then(links=>{
       const list = document.getElementById('link-list');
       if(links && Array.isArray(links) && links.length > 0) {
-        list.innerHTML = links.map(l=>'<a href="'+l.url+'" target="_blank">🔗 '+l.name+'</a>').join('');
+        list.innerHTML = links.map(l=>'<a href="'+l.url+'" target="_blank">'+l.name+'</a>').join('');
       }
     });
     async function loadPosts() {
@@ -960,9 +960,9 @@ function getPostHTML(post, settings) {
             <div class="stat-label">分类</div>
           </div>
         </div>
-        <h4>📂 分类</h4>
+        <h4>分类</h4>
         <div id="category-list" class="category-list"></div>
-        <h4>🔗 友链</h4>
+        <h4>友链</h4>
         <div id="link-list" class="link-list"></div>
       </div>
     </aside>
@@ -988,13 +988,13 @@ function getPostHTML(post, settings) {
     fetch('/api/categories').then(r=>r.json()).then(cats=>{
       const list = document.getElementById('category-list');
       if(cats && Array.isArray(cats) && cats.length > 0) {
-        list.innerHTML = '<a href="/">🏠 全部</a>' + cats.map(c=>'<a href="/?category='+encodeURIComponent(c.name)+'">📂 '+c.name+'</a>').join('');
+        list.innerHTML = '<a href="/">全部</a>' + cats.map(c=>'<a href="/?category='+encodeURIComponent(c.name)+'">'+c.name+'</a>').join('');
       }
     });
     fetch('/api/links').then(r=>r.json()).then(links=>{
       const list = document.getElementById('link-list');
       if(links && Array.isArray(links) && links.length > 0) {
-        list.innerHTML = links.map(l=>'<a href="'+l.url+'" target="_blank">🔗 '+l.name+'</a>').join('');
+        list.innerHTML = links.map(l=>'<a href="'+l.url+'" target="_blank">'+l.name+'</a>').join('');
       }
     });
   </script>
