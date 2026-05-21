@@ -1492,7 +1492,7 @@ function getAdminHTML() {
             case 'italic': insert = '*' + (selected || '斜体文字') + '*'; break;
             case 'link': insert = '[' + (selected || '链接文字') + '](https://)'; break;
             case 'image': insert = '![' + (selected || '图片描述') + '](https://图片地址)'; break;
-            case 'code': var hasNL = selected.indexOf(String.fromCharCode(10)) >= 0; insert = hasNL ? '```' + String.fromCharCode(10) + (selected || '代码') + String.fromCharCode(10) + '```' : '`' + (selected || '代码') + '`'; break;
+            case 'code': var hasNL = selected.indexOf(String.fromCharCode(10)) >= 0; var cb = String.fromCharCode(96)+String.fromCharCode(96)+String.fromCharCode(96); insert = hasNL ? cb + String.fromCharCode(10) + (selected || '代码') + String.fromCharCode(10) + cb : String.fromCharCode(96) + (selected || '代码') + String.fromCharCode(96); break;
             case 'ul': insert = '- ' + (selected || '列表项'); break;
             case 'ol': insert = '1. ' + (selected || '列表项'); break;
             case 'quote': insert = '> ' + (selected || '引用内容'); break;
