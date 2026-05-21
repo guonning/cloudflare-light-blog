@@ -732,9 +732,9 @@ function getFrontendHTML(settings) {
             <div class="stat-label">分类</div>
           </div>
         </div>
-        <h4>分类</h4>
+        <h4>📂 分类</h4>
         <div id="category-list" class="category-list"></div>
-        <h4>友链</h4>
+        <h4>🔗 友链</h4>
         <div id="link-list" class="link-list"></div>
       </div>
     </aside>
@@ -960,9 +960,9 @@ function getPostHTML(post, settings) {
             <div class="stat-label">分类</div>
           </div>
         </div>
-        <h4>分类</h4>
+        <h4>📂 分类</h4>
         <div id="category-list" class="category-list"></div>
-        <h4>友链</h4>
+        <h4>🔗 友链</h4>
         <div id="link-list" class="link-list"></div>
       </div>
     </aside>
