@@ -753,7 +753,7 @@ function getPostHTML(post, settings) {
       <div class="profile-card">
         ${siteAvatar ? `<img class="avatar" src="${siteAvatar}" alt="头像">` : `<img class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect fill='%23e8e0cc' width='80' height='80'/%3E%3Ctext x='40' y='45' text-anchor='middle' fill='%239f927d' font-size='32'%3E?%3C/text%3E%3C/svg%3E" alt="头像">`}
         <div class="name">${siteAuthor}</div>
-        ${siteBio ? `<div class="bio">${settings.site_bio}</div>` : ''}
+        ${settings.site_bio ? `<div class="bio">${settings.site_bio}</div>` : ''}
         <div class="stats">
           <div class="stat-item">
             <div id="stat-posts" class="stat-num">-</div>
