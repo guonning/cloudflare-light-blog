@@ -1452,7 +1452,7 @@ function getAdminHTML() {
           <!-- 分类列表 -->
           <div v-for="cat in categories" :key="cat.id" class="card" style="margin-bottom:12px">
             <div style="display:flex;align-items:center;gap:12px">
-              <div style="display:flex;gap:6px">
+              <div class="actions" style="display:flex;gap:6px">
                 <button class="delete" @click="deleteCategory(cat.id)">删除</button>
                 <button class="edit" @click="editCategory(cat)">编辑</button>
               </div>
