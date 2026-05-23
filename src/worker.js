@@ -1237,10 +1237,10 @@ function getAdminHTML() {
         <button @click="login">登录</button>
       </div>
     </div>
-    <button class="admin-mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open');document.getElementById('adminOverlay').classList.toggle('show')">☰</button>
-    <div class="admin-mobile-overlay" id="adminOverlay" onclick="document.querySelector('.sidebar').classList.toggle('open');document.getElementById('adminOverlay').classList.toggle('show')"></div>
+    <button class="admin-mobile-toggle" @click="toggleAdminNav">☰</button>
+    <div class="admin-mobile-overlay" :class="{show: adminNavOpen}" @click="toggleAdminNav"></div>
     <div v-else class="admin-layout">
-      <nav class="sidebar">
+      <nav class="sidebar" :class="{open: adminNavOpen}">
         <div class="sidebar-header">
           <h1>管理后台</h1>
         </div>
@@ -1777,6 +1777,12 @@ function getAdminHTML() {
         const uploadAvatar = async (file) => { const fd = new FormData(); fd.append('file', file); const res = await fetch('/api/upload', { method: 'POST', body: fd }); const data = await res.json(); if (data.url) settingsForm.value.site_avatar = data.url; };
 
         const trashPosts = ref([]);
+        const adminNavOpen = ref(false);
+        
+        const toggleAdminNav = () => {
+          adminNavOpen.value = !adminNavOpen.value;
+          document.querySelector('.sidebar').classList.toggle('open', adminNavOpen.value);
+        };
         
         const loadTrash = async () => {
           try { const res = await api('/api/admin/trash'); trashPosts.value = res.data; } catch(e) {}
@@ -1822,7 +1828,7 @@ function getAdminHTML() {
           setTimeout(() => { textarea.focus(); textarea.selectionStart = start + insert.length; textarea.selectionEnd = start + insert.length; }, 0);
         };
 
-        return { logged, password, login, logout, posts, editingId, form, coverPreview, toast, uploading, uploadProgress, openAdd, toggleEdit, handleCoverChange, handleDrop, savePost, deletePost, deleteCover, categories, currentPage, categoryForm, saveCategory, deleteCategory, editCategory, showCategoryForm, editingCategory, settingsForm, saveSettings, handleFavicon, handleFaviconDrop, handleAvatar, handleAvatarDrop, insertMd, trashPosts, restorePost, permanentDelete, emptyTrash, confirmModal, showConfirm };
+        return { logged, password, login, logout, posts, editingId, form, coverPreview, toast, uploading, uploadProgress, openAdd, toggleEdit, handleCoverChange, handleDrop, savePost, deletePost, deleteCover, categories, currentPage, categoryForm, saveCategory, deleteCategory, editCategory, showCategoryForm, editingCategory, settingsForm, saveSettings, handleFavicon, handleFaviconDrop, handleAvatar, handleAvatarDrop, insertMd, trashPosts, restorePost, permanentDelete, emptyTrash, confirmModal, showConfirm, adminNavOpen, toggleAdminNav };
       }
     }).mount('#app');
   <\/script>
