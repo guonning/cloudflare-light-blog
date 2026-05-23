@@ -92,7 +92,8 @@ async function initDB(env) {
           status TEXT DEFAULT 'draft',
           view_count INTEGER DEFAULT 0,
           created_at TEXT,
-          updated_at TEXT
+          updated_at TEXT,
+          published_at TEXT
         )
       `).run();
 
@@ -398,9 +399,10 @@ async function handleAPI(request, env, path) {
         coverImage = await uploadImage(env, body.cover_image, slug);
       }
       const now = new Date().toISOString();
+      const published_at = body.published_at ? new Date(body.published_at).toISOString() : now;
       const result = await env.DB.prepare(`
-        INSERT INTO posts (title, slug, content, excerpt, cover_image, category, tags, status, password, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO posts (title, slug, content, excerpt, cover_image, category, tags, status, password, created_at, updated_at, published_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `).bind(
         body.title,
         slug,
@@ -412,7 +414,8 @@ async function handleAPI(request, env, path) {
         body.status || 'draft',
         body.password || '',
         now,
-        now
+        now,
+        published_at
       ).run();
       return json({ success: true, id: result.lastInsertRowid });
     } catch (e) {
@@ -430,8 +433,9 @@ async function handleAPI(request, env, path) {
         coverImage = await uploadImage(env, body.cover_image, id);
       }
       const now = new Date().toISOString();
+      const published_at = body.published_at ? new Date(body.published_at).toISOString() : now;
       await env.DB.prepare(`
-        UPDATE posts SET title=?, content=?, excerpt=?, cover_image=?, category=?, tags=?, status=?, password=?, updated_at=? WHERE id=?
+        UPDATE posts SET title=?, content=?, excerpt=?, cover_image=?, category=?, tags=?, status=?, password=?, updated_at=?, published_at=? WHERE id=?
       `).bind(
         body.title,
         body.content,
@@ -442,6 +446,7 @@ async function handleAPI(request, env, path) {
         body.status || 'draft',
         body.password || '',
         now,
+        published_at,
         id
       ).run();
       return json({ success: true });
@@ -1245,12 +1250,18 @@ function getAdminHTML() {
                   <input v-model="form.tags" placeholder="标签1,标签2">
                 </div>
               </div>
-              <div class="form-group">
-                <label>状态</label>
-                <select v-model="form.status" style="max-width:200px">
-                  <option value="draft">草稿</option>
-                  <option value="published">已发布</option>
-                </select>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>状态</label>
+                  <select v-model="form.status">
+                    <option value="draft">草稿</option>
+                    <option value="published">已发布</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>发布日期</label>
+                  <input type="date" v-model="form.published_at" :max="new Date().toISOString().split('T')[0]">
+                </div>
               </div>
               <div class="form-group">
                 <label>封面图片</label>
@@ -1318,12 +1329,18 @@ function getAdminHTML() {
                 <input v-model="form.tags" placeholder="标签1,标签2">
               </div>
             </div>
-            <div class="form-group">
-              <label>状态</label>
-              <select v-model="form.status" style="max-width:200px">
-                <option value="draft">草稿</option>
-                <option value="published">已发布</option>
-              </select>
+            <div class="form-row">
+              <div class="form-group">
+                <label>状态</label>
+                <select v-model="form.status">
+                  <option value="draft">草稿</option>
+                  <option value="published">已发布</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>发布日期</label>
+                <input type="date" v-model="form.published_at" :max="new Date().toISOString().split('T')[0]">
+              </div>
             </div>
             <div class="form-group">
               <label>封面图片</label>
@@ -1496,7 +1513,7 @@ function getAdminHTML() {
         const password = ref('');
         const posts = ref([]);
         const editingId = ref(null);
-        const form = ref({ title: '', category: '', status: 'draft', tags: '', content: '', cover_image: '', password: '' });
+        const form = ref({ title: '', category: '', status: 'draft', tags: '', content: '', cover_image: '', password: '', published_at: new Date().toISOString().split('T')[0] });
         const coverPreview = ref('');
         const toast = ref('');
         const uploading = ref(false);
@@ -1556,7 +1573,7 @@ function getAdminHTML() {
 
         const openAdd = () => {
           editingId.value = null;
-          form.value = { title: '', category: '', status: 'draft', tags: '', content: '', cover_image: '', password: '' };
+          form.value = { title: '', category: '', status: 'draft', tags: '', content: '', cover_image: '', password: '', published_at: new Date().toISOString().split('T')[0] };
           coverPreview.value = '';
           currentPage.value = 'new';
         };
@@ -1566,7 +1583,7 @@ function getAdminHTML() {
             editingId.value = null;
           } else {
             editingId.value = post.id;
-            form.value = { title: post.title, content: post.content, category: post.category, tags: post.tags, status: post.status, cover_image: post.cover_image || '', password: post.password || '' };
+            form.value = { title: post.title, content: post.content, category: post.category, tags: post.tags, status: post.status, cover_image: post.cover_image || '', password: post.password || '', published_at: post.published_at ? post.published_at.split('T')[0] : new Date().toISOString().split('T')[0] };
             coverPreview.value = post.cover_image || '';
           }
         };
