@@ -1377,15 +1377,75 @@ function getAdminHTML() {
                 </div>
                 <textarea ref="editContentArea" v-model="form.content" placeholder="文章内容" rows="10"></textarea>
               </div>
-              <div style="display:flex;gap:10px;justify-content:flex-end">
-                <button class="btn" @click="savePost">保存</button>
-                <button class="btn btn-cancel" @click="editingId=null">取消</button>
+              <div class="editor-layout" style="margin-top:16px;padding-top:16px;border-top:2px solid #e8e0cc">
+                <div class="editor-main">
+                  <div class="form-group">
+                    <label>标题</label>
+                    <input v-model="form.title" placeholder="文章标题">
+                  </div>
+                  <div class="form-group">
+                    <label>内容</label>
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+                      <button type="button" @click="insertMd('heading')" style="padding:5px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">标题</button>
+                      <button type="button" @click="insertMd('bold')" style="padding:5px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-weight:700;font-size:12px;color:#725d42">B</button>
+                      <button type="button" @click="insertMd('italic')" style="padding:5px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-style:italic;font-size:12px;color:#725d42">I</button>
+                      <button type="button" @click="insertMd('link')" style="padding:5px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">🔗</button>
+                      <button type="button" @click="insertMd('image')" style="padding:5px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">🖼</button>
+                      <button type="button" @click="insertMd('code')" style="padding:5px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">代码</button>
+                    </div>
+                    <textarea ref="editContentArea" v-model="form.content" placeholder="文章内容" rows="12"></textarea>
+                  </div>
+                  <div style="display:flex;gap:10px;justify-content:flex-end">
+                    <button class="btn" @click="savePost">保存</button>
+                    <button class="btn btn-cancel" @click="editingId=null">取消</button>
+                  </div>
+                </div>
+                <div class="editor-side">
+                  <div class="form-group">
+                    <label>封面图片</label>
+                    <div class="cover-upload" @click="$refs.editFileInput.click()" @dragover.prevent @drop.prevent="handleDrop" style="padding:16px">
+                      <input ref="editFileInput" type="file" @change="handleCoverChange" accept="image/*" style="display:none">
+                      <div v-if="!coverPreview"><p style="color:#9f927d;font-size:12px">点击上传</p></div>
+                      <img v-else :src="coverPreview" style="width:100%;border-radius:8px">
+                    </div>
+                    <div v-if="coverPreview" style="display:flex;gap:6px;margin-top:6px">
+                      <button @click="$refs.editFileInput.click()" style="flex:1;padding:5px;background:#19c8b9;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:11px">更换</button>
+                      <button @click="deleteCover" style="flex:1;padding:5px;background:#e05a5a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:11px">删除</button>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>状态</label>
+                    <select v-model="form.status">
+                      <option value="draft">草稿</option>
+                      <option value="published">已发布</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>日期</label>
+                    <input type="date" v-model="form.published_at" :max="new Date().toISOString().split('T')[0]">
+                  </div>
+                  <div class="form-group">
+                    <label>分类</label>
+                    <select v-model="form.category">
+                      <option value="">请选择</option>
+                      <option v-for="cat in categories" :key="cat.id" :value="cat.name">{{ cat.name }}</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>标签</label>
+                    <input v-model="form.tags" placeholder="标签1,标签2">
+                  </div>
+                  <div class="form-group">
+                    <label>密码</label>
+                    <input v-model="form.password" type="password" placeholder="留空无需密码">
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
         
-        <!-- 新建文章 -->
+                <!-- 新建文章 -->
         <div v-if="currentPage==='new'">
           <div class="page-header">
             <h2>{{ editingId ? '编辑文章' : '新建文章' }}</h2>
@@ -1393,97 +1453,79 @@ function getAdminHTML() {
           <div style="margin-bottom:16px">
             <button class="btn btn-cancel" @click="currentPage='posts';editingId=null">返回列表</button>
           </div>
-          <div class="card">
-            <div class="form-row">
-              <div class="form-group">
-                <label>标题</label>
-                <input v-model="form.title" placeholder="文章标题">
-              </div>
-              <div class="form-group">
-                <label>密码（可选）</label>
-                <input v-model="form.password" type="password" placeholder="留空则无需密码">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>分类</label>
-                <select v-model="form.category" required>
-                  <option value="">请选择分类</option>
-                  <option v-for="cat in categories" :key="cat.id" :value="cat.name">{{ cat.name }}</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>标签（逗号分隔）</label>
-                <input v-model="form.tags" placeholder="标签1,标签2">
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>状态</label>
-                <select v-model="form.status">
-                  <option value="draft">草稿</option>
-                  <option value="published">已发布</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>发布日期</label>
-                <input type="date" v-model="form.published_at" :max="new Date().toISOString().split('T')[0]">
+          <div class="editor-layout">
+            <!-- 左侧：标题和内容 -->
+            <div class="editor-main">
+              <div class="card">
+                <div class="form-group">
+                  <label>标题</label>
+                  <input v-model="form.title" placeholder="文章标题">
+                </div>
+                <div class="form-group">
+                  <label>内容</label>
+                  <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
+                    <button type="button" @click="insertMd('heading')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;font-weight:600;color:#725d42">标题</button>
+                    <button type="button" @click="insertMd('bold')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;font-weight:700;color:#725d42">B</button>
+                    <button type="button" @click="insertMd('italic')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;font-style:italic;color:#725d42">I</button>
+                    <button type="button" @click="insertMd('link')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">🔗 链接</button>
+                    <button type="button" @click="insertMd('image')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">🖼 图片</button>
+                    <button type="button" @click="insertMd('code')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;font-family:monospace;color:#725d42">代码</button>
+                    <button type="button" @click="insertMd('ul')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">• 列表</button>
+                    <button type="button" @click="insertMd('ol')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">1. 序号</button>
+                    <button type="button" @click="insertMd('quote')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">❝ 引用</button>
+                    <button type="button" @click="insertMd('hr')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">— 分割线</button>
+                  </div>
+                  <textarea ref="contentArea" v-model="form.content" placeholder="文章内容" rows="20"></textarea>
+                </div>
+                <button class="btn" @click="savePost" style="width:100%;margin-top:16px">保存文章</button>
               </div>
             </div>
-            <div class="form-group">
-              <label>封面图片</label>
-              <div class="cover-upload" @click="$refs.newFileInput.click()" @dragover.prevent @drop.prevent="handleDrop">
-                <input ref="newFileInput" type="file" @change="handleCoverChange" accept="image/*" style="display:none">
-                <div v-if="!coverPreview"><p style="color:#9f927d">点击或拖拽图片到这里</p></div>
-                <img v-else :src="coverPreview" style="max-width:200px;max-height:150px;object-fit:cover;border-radius:12px">
+            <!-- 右侧：封面图、状态、分类、标签、密码 -->
+            <div class="editor-side">
+              <div class="card">
+                <div class="form-group">
+                  <label>封面图片</label>
+                  <div class="cover-upload" @click="$refs.newFileInput.click()" @dragover.prevent @drop.prevent="handleDrop">
+                    <input ref="newFileInput" type="file" @change="handleCoverChange" accept="image/*" style="display:none">
+                    <div v-if="!coverPreview"><p style="color:#9f927d;font-size:13px">点击或拖拽上传</p></div>
+                    <img v-else :src="coverPreview" style="width:100%;object-fit:cover;border-radius:12px">
+                  </div>
+                  <div v-if="coverPreview" style="display:flex;gap:8px;margin-top:8px">
+                    <button @click="$refs.newFileInput.click()" style="flex:1;padding:6px;background:#19c8b9;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px">更换</button>
+                    <button @click="deleteCover" style="flex:1;padding:6px;background:#e05a5a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px">删除</button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>状态</label>
+                  <select v-model="form.status">
+                    <option value="draft">草稿</option>
+                    <option value="published">已发布</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>发布日期</label>
+                  <input type="date" v-model="form.published_at" :max="new Date().toISOString().split('T')[0]">
+                </div>
+                <div class="form-group">
+                  <label>分类</label>
+                  <select v-model="form.category" required>
+                    <option value="">请选择</option>
+                    <option v-for="cat in categories" :key="cat.id" :value="cat.name">{{ cat.name }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>标签</label>
+                  <input v-model="form.tags" placeholder="标签1,标签2">
+                </div>
+                <div class="form-group">
+                  <label>密码（可选）</label>
+                  <input v-model="form.password" type="password" placeholder="留空无需密码">
+                </div>
               </div>
-              <div v-if="coverPreview" style="display:flex;gap:10px;margin-top:10px">
-                <button @click="$refs.newFileInput.click()" style="padding:8px 16px;background:#19c8b9;color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px">更换图片</button>
-                <button @click="deleteCover" style="padding:8px 16px;background:#e05a5a;color:#fff;border:none;border-radius:50px;cursor:pointer;font-size:13px">删除图片</button>
-              </div>
-            </div>
-            <div class="form-group">
-              <label>内容</label>
-              <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">
-                <button type="button" @click="insertMd('heading')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;font-weight:600;color:#725d42">标题</button>
-                <button type="button" @click="insertMd('bold')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;font-weight:700;color:#725d42">B</button>
-                <button type="button" @click="insertMd('italic')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;font-style:italic;color:#725d42">I</button>
-                <button type="button" @click="insertMd('link')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">🔗 链接</button>
-                <button type="button" @click="insertMd('image')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">🖼 图片</button>
-                <button type="button" @click="insertMd('code')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;font-family:monospace;color:#725d42">代码</button>
-                <button type="button" @click="insertMd('ul')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">• 列表</button>
-                <button type="button" @click="insertMd('ol')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">1. 序号</button>
-                <button type="button" @click="insertMd('quote')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">❝ 引用</button>
-                <button type="button" @click="insertMd('hr')" style="padding:6px 12px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:8px;cursor:pointer;color:#725d42">— 分割线</button>
-              </div>
-              <textarea ref="contentArea" v-model="form.content" placeholder="文章内容" rows="15"></textarea>
-            </div>
-            <button class="btn" @click="savePost" style="width:100%;margin-top:20px">保存文章</button>
-          </div>
-        </div>
-        
-        <!-- 回收站 -->
-        <div v-if="currentPage==='trash'">
-          <div class="page-header">
-            <h2>回收站</h2>
-            <button class="btn btn-danger" @click="emptyTrash" v-if="trashPosts.length > 0">清空回收站</button>
-          </div>
-          <div v-if="trashPosts.length === 0" class="card" style="text-align:center;color:#9f927d;padding:40px">
-            回收站是空的
-          </div>
-          <div v-for="post in trashPosts" :key="post.id" class="card" style="margin-bottom:12px">
-            <div style="display:flex;align-items:center;gap:12px">
-              <div style="display:flex;gap:6px">
-                <button class="btn" @click="restorePost(post.id)" style="padding:6px 14px;font-size:13px">恢复</button>
-                <button class="btn btn-danger" @click="permanentDelete(post.id)" style="padding:6px 14px;font-size:13px">彻底删除</button>
-              </div>
-              <h3 style="color:#794f27;margin:0;flex:1">{{ post.title }}</h3>
-              <span style="color:#9f927d;font-size:0.85em">{{ post.category }}</span>
-              <span style="color:#9f927d;font-size:0.85em">{{ new Date(post.created_at).toLocaleDateString('zh-CN') }}</span>
             </div>
           </div>
         </div>
-        
+
         <!-- 分类管理 -->
         <div v-if="currentPage==='category'">
           <div class="page-header">
