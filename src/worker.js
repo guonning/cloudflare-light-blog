@@ -1365,4 +1365,3 @@ function getAdminHTML() {
 </body>
 </html>`;
 }
-}
