@@ -1211,21 +1211,25 @@ function getAdminHTML() {
             </div>
             <div v-if="editingId===post.id" style="margin-top:16px;padding-top:16px;border-top:2px solid #e8e0cc">
               <div class="editor-layout">
-                <div class="editor-main">
+                <div class="editor-main" style="display:flex;flex-direction:column">
                   <div class="form-group"><label>标题</label><input v-model="form.title"></div>
-                  <div class="form-group">
+                  <div class="form-group" style="flex:1;display:flex;flex-direction:column">
                     <label>内容</label>
                     <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:8px">
-                      <button type="button" @click="insertMd('heading')" style="padding:4px 8px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;color:#725d42">标题</button>
-                      <button type="button" @click="insertMd('bold')" style="padding:4px 8px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;color:#725d42">B</button>
-                      <button type="button" @click="insertMd('italic')" style="padding:4px 8px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:11px;font-style:italic;color:#725d42">I</button>
-                      <button type="button" @click="insertMd('link')" style="padding:4px 8px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:11px;color:#725d42">🔗</button>
-                      <button type="button" @click="insertMd('image')" style="padding:4px 8px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:11px;color:#725d42">🖼</button>
-                      <button type="button" @click="insertMd('code')" style="padding:4px 8px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:11px;color:#725d42">代码</button>
+                      <button type="button" @click="insertMd('heading')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:#725d42">标题</button>
+                      <button type="button" @click="insertMd('bold')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;color:#725d42">B</button>
+                      <button type="button" @click="insertMd('italic')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;font-style:italic;color:#725d42">I</button>
+                      <button type="button" @click="insertMd('link')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">🔗</button>
+                      <button type="button" @click="insertMd('image')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">🖼</button>
+                      <button type="button" @click="insertMd('code')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">代码</button>
+                      <button type="button" @click="insertMd('ul')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">•列表</button>
+                      <button type="button" @click="insertMd('ol')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">1.序号</button>
+                      <button type="button" @click="insertMd('quote')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">❝引用</button>
+                      <button type="button" @click="insertMd('hr')" style="padding:4px 10px;background:#f0e8d8;border:2px solid #c4b89e;border-radius:6px;cursor:pointer;font-size:12px;color:#725d42">—分割线</button>
                     </div>
-                    <textarea v-model="form.content" rows="10"></textarea>
+                    <textarea v-model="form.content" style="flex:1;min-height:200px"></textarea>
                   </div>
-                  <div style="display:flex;gap:10px;justify-content:flex-end"><button class="btn" @click="savePost">保存</button><button class="btn btn-cancel" @click="editingId=null">取消</button></div>
+                  <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:12px"><button class="btn" @click="savePost">保存</button><button class="btn btn-cancel" @click="editingId=null">取消</button></div>
                 </div>
                 <div class="editor-side">
                   <div class="form-group"><label>状态</label><select v-model="form.status"><option value="draft">草稿</option><option value="published">已发布</option></select></div>
@@ -1233,7 +1237,18 @@ function getAdminHTML() {
                   <div class="form-group"><label>分类</label><select v-model="form.category"><option value="">请选择</option><option v-for="cat in categories" :value="cat.name">{{cat.name}}</option></select></div>
                   <div class="form-group"><label>标签</label><input v-model="form.tags" placeholder="用英文逗号隔开"></div>
                   <div class="form-group"><label>密码（可选）</label><input v-model="form.password" type="password" placeholder="留空无需密码"></div>
-                  <div class="form-group"><label>封面</label><input type="file" @change="handleCoverChange" accept="image/*"><img v-if="coverPreview" :src="coverPreview" style="max-width:100%;margin-top:8px;border-radius:8px"></div>
+                  <div class="form-group">
+                    <label>封面图片</label>
+                    <div class="cover-upload" @click="$refs.editFileInput.click()" @dragover.prevent @drop.prevent="handleDrop" style="padding:16px">
+                      <input ref="editFileInput" type="file" @change="handleCoverChange" accept="image/*" style="display:none">
+                      <div v-if="!coverPreview"><p style="color:#9f927d;font-size:13px">点击或拖拽上传</p></div>
+                      <img v-else :src="coverPreview" style="max-width:100%;border-radius:8px">
+                    </div>
+                    <div v-if="coverPreview" style="display:flex;gap:6px;margin-top:6px">
+                      <button @click="$refs.editFileInput.click()" style="flex:1;padding:6px;background:#19c8b9;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px">更换</button>
+                      <button @click="deleteCover" style="flex:1;padding:6px;background:#e05a5a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px">删除</button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1271,7 +1286,7 @@ function getAdminHTML() {
               <div class="form-group"><label>密码（可选）</label><input v-model="form.password" type="password" placeholder="留空则无需密码"></div>
               <div class="form-group">
                 <label>封面图片</label>
-                <div class="cover-upload" @click="$refs.newFileInput.click()" @dragover.prevent @drop.prevent="handleDrop" style="padding:16px">
+                <div class="cover-upload" @click="$refs.newFileInput.click()" @dragover.prevent @drop.prevent="handleDrop" style="padding:16px;border:2px dashed #c4b89e;border-radius:12px;background:#f0e8d8">
                   <input ref="newFileInput" type="file" @change="handleCoverChange" accept="image/*" style="display:none">
                   <div v-if="!coverPreview"><p style="color:#9f927d;font-size:13px">点击或拖拽上传</p></div>
                   <img v-else :src="coverPreview" style="max-width:100%;border-radius:8px">
@@ -1345,7 +1360,18 @@ function getAdminHTML() {
           <div class="card">
             <div class="form-group"><label>网站标题</label><input v-model="settingsForm.site_name"></div>
             <div class="form-group"><label>网站副标题</label><input v-model="settingsForm.site_description"></div>
-            <div class="form-group"><label>网站图标</label><input type="file" @change="handleFavicon" accept=".ico,image/*"><img v-if="settingsForm.site_favicon" :src="settingsForm.site_favicon" style="width:32px;margin-top:8px"></div>
+            <div class="form-group">
+              <label>网站图标（建议ICO格式）</label>
+              <div class="cover-upload" @click="$refs.faviconInput.click()" @dragover.prevent @drop.prevent="handleFaviconDrop" style="padding:16px;border:2px dashed #c4b89e;border-radius:12px;background:#f0e8d8">
+                <input ref="faviconInput" type="file" @change="handleFavicon" accept=".ico,image/*" style="display:none">
+                <div v-if="!settingsForm.site_favicon"><p style="color:#9f927d;font-size:13px">点击或拖拽上传ICO图标</p></div>
+                <img v-else :src="settingsForm.site_favicon" style="width:32px">
+              </div>
+              <div v-if="settingsForm.site_favicon" style="display:flex;gap:6px;margin-top:6px">
+                <button @click="$refs.faviconInput.click()" style="flex:1;padding:6px;background:#19c8b9;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px">更换</button>
+                <button @click="settingsForm.site_favicon=''" style="flex:1;padding:6px;background:#e05a5a;color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:12px">删除</button>
+              </div>
+            </div>
             <div class="form-group"><label>网站页脚（HTML）</label><textarea v-model="settingsForm.site_footer" rows="3"></textarea></div>
             <div class="form-group"><label>自定义JS</label><textarea v-model="settingsForm.custom_js" rows="4"></textarea></div>
             <button class="btn" @click="saveSettings" style="width:100%">保存设置</button>
@@ -1406,7 +1432,9 @@ function getAdminHTML() {
         const uploadFile = async (f) => { const fd = new FormData(); fd.append('file', f); const r = await fetch('/api/upload', { method: 'POST', body: fd }); const d = await r.json(); if (d.url) { form.value.cover_image = d.url; coverPreview.value = d.url; } };
         const handleAvatarDrop = async (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f && f.type.startsWith('image/')) { const fd = new FormData(); fd.append('file', f); const r = await fetch('/api/upload', { method: 'POST', body: fd }); const d = await r.json(); if (d.url) settingsForm.value.site_avatar = d.url; } };
         const deleteCover = () => { form.value.cover_image = ''; coverPreview.value = ''; };
-        const handleFavicon = async (e) => { const f = e.target.files[0]; if (!f) return; const fd = new FormData(); fd.append('file', f); const r = await fetch('/api/upload', { method: 'POST', body: fd }); const d = await r.json(); if (d.url) settingsForm.value.site_favicon = d.url; };
+        const handleFavicon = async (e) => { const f = e.target.files[0]; if (f) await uploadFavicon(f); };
+        const handleFaviconDrop = async (e) => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) await uploadFavicon(f); };
+        const uploadFavicon = async (f) => { const fd = new FormData(); fd.append('file', f); const r = await fetch('/api/upload', { method: 'POST', body: fd }); const d = await r.json(); if (d.url) settingsForm.value.site_favicon = d.url; };
         const handleAvatar = async (e) => { const f = e.target.files[0]; if (!f) return; const fd = new FormData(); fd.append('file', f); const r = await fetch('/api/upload', { method: 'POST', body: fd }); const d = await r.json(); if (d.url) settingsForm.value.site_avatar = d.url; };
         const restorePost = async (id) => { try { await api('/api/admin/restore', { method: 'POST', data: { id } }); loadPosts(); loadTrash(); showToast('已恢复'); } catch (e) {} };
         const permanentDelete = async (id) => { const c = await showConfirm('确认删除', '彻底删除？不可恢复！'); if (!c) return; try { await api('/api/admin/permanent-delete', { method: 'POST', data: { id } }); loadTrash(); showToast('已删除'); } catch (e) {} };
@@ -1437,7 +1465,7 @@ function getAdminHTML() {
         };
 
         onMounted(() => { check(); loadCategories(); loadSettings(); loadTrash(); });
-        return { logged, password, login, logout, posts, editingId, form, coverPreview, toast, openAdd, toggleEdit, handleCoverChange, handleDrop, deleteCover, savePost, deletePost, categories, currentPage, categoryForm, saveCategory, deleteCategory, editCategory, editingCategory, settingsForm, saveSettings, handleFavicon, handleAvatar, handleAvatarDrop, trashPosts, restorePost, permanentDelete, emptyTrash, confirmModal, showConfirm, insertMd };
+        return { logged, password, login, logout, posts, editingId, form, coverPreview, toast, openAdd, toggleEdit, handleCoverChange, handleDrop, deleteCover, savePost, deletePost, categories, currentPage, categoryForm, saveCategory, deleteCategory, editCategory, editingCategory, settingsForm, saveSettings, handleFavicon, handleFaviconDrop, handleAvatar, handleAvatarDrop, trashPosts, restorePost, permanentDelete, emptyTrash, confirmModal, showConfirm, insertMd };
       }
     }).mount('#app');
   <\/script>
