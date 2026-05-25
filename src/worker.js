@@ -1229,7 +1229,50 @@ function getAdminHTML() {
     .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(107,92,67,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
     .modal-box { background: #f7f3df; border-radius: 20px; padding: 32px; max-width: 400px; width: 90%; border: 2px solid #e8e0cc; }
     .toast { position: fixed; bottom: 20px; right: 20px; padding: 16px 24px; background: #6fba2c; color: #fff; border-radius: 50px; font-weight: 600; }
-    @media (max-width: 768px) { .editor-layout { flex-direction: column; } }
+    @media (max-width: 768px) {
+      .admin-layout { flex-direction: column; }
+      .sidebar { 
+        width: 100%; 
+        flex-direction: row; 
+        overflow-x: auto;
+        padding: 0;
+      }
+      .sidebar-header { 
+        padding: 12px 16px; 
+        white-space: nowrap;
+      }
+      .sidebar-header h1 { font-size: 16px; }
+      .sidebar-menu { 
+        display: flex; 
+        padding: 8px 12px; 
+        gap: 6px; 
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+      .sidebar-menu a { 
+        white-space: nowrap; 
+        padding: 8px 14px; 
+        margin: 0; 
+        font-size: 13px;
+        border-radius: 10px;
+      }
+      .sidebar-footer { 
+        padding: 8px 12px; 
+        white-space: nowrap;
+      }
+      .sidebar-footer button { 
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+      .main-content { padding: 16px; }
+      .page-header h2 { font-size: 1.3em; }
+      .card { padding: 16px; border-radius: 16px; }
+      .editor-layout { flex-direction: column; }
+      .editor-main, .editor-side { width: 100%; }
+      .form-row { grid-template-columns: 1fr; }
+      .btn { padding: 10px 20px; font-size: 14px; }
+      .custom-select-dropdown { max-height: 150px; }
+    }
   </style>
 </head>
 <body>
