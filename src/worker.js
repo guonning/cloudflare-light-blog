@@ -1111,32 +1111,45 @@ function getPostHTML(post, settings) {
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.9.0/build/highlight.min.js"></script>
   <style>
     pre {
-      background: #282c34;
+      background: linear-gradient(135deg, #2d2d2d, #1e1e1e);
       border-radius: 12px;
       padding: 20px;
       overflow-x: auto;
       margin: 16px 0;
-      border: 2px solid #3d4048;
+      border: 2px solid #404040;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      position: relative;
+    }
+    pre::before {
+      content: 'code';
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 11px;
+      color: #6d6d6d;
+      font-family: monospace;
     }
     pre code {
-      font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+      font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
       font-size: 14px;
-      line-height: 1.6;
-      color: #abb2bf;
+      line-height: 1.7;
+      color: #e0e0e0;
       background: none;
       padding: 0;
       border-radius: 0;
       border: none;
       box-shadow: none;
+      display: block;
     }
     code {
       font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
-      background: #f0e8d8;
-      color: #e05a5a;
-      padding: 2px 8px;
-      border-radius: 6px;
-      font-size: 0.9em;
-      border: 1.5px solid #e8e0cc;
+      background: linear-gradient(135deg, #f5f0e8, #ede5d5);
+      color: #c0392b;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-size: 0.88em;
+      border: 1.5px solid #e0d8c8;
+      box-shadow: 0 2px 0 0 #d4c9b4;
     }
     .hljs-keyword, .hljs-selector-tag { color: #c678dd; }
     .hljs-string, .hljs-attr { color: #98c379; }
