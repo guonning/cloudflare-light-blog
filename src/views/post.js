@@ -258,19 +258,32 @@ export function getPostHTML(post, settings) {
     .hljs-deletion { color: #ffdcd7; background: rgba(248,81,73,0.15); }
   </style>
   <script>
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       var content = ${JSON.stringify(post.content)};
-      marked.setOptions({
-        highlight: function(code, lang) {
-          if (lang && hljs.getLanguage(lang)) { try { return hljs.highlight(code, {language: lang}).value; } catch(e) {} }
-          try { return hljs.highlightAuto(code).value; } catch(e) {}
-          return code;
-        },
-        breaks: true,
-        gfm: true
+      marked.use({
+        renderer: {
+          code: function(code) {
+            var text = typeof code === 'object' ? code.text : code;
+            var lang = typeof code === 'object' ? code.lang : arguments[1];
+            var escaped = escapeHtml(text);
+            if (lang && hljs.getLanguage(lang)) {
+              try { return '<pre><code class="hljs language-' + lang + '">' + hljs.highlight(text, {language: lang}).value + '</code></pre>'; } catch(e) {}
+            }
+            try { return '<pre><code class="hljs">' + hljs.highlightAuto(text).value + '</code></pre>'; } catch(e) {}
+            return '<pre><code>' + escaped + '</code></pre>';
+          },
+          codespan: function(code) {
+            var text = typeof code === 'object' ? code.text : code;
+            return '<code>' + escapeHtml(text) + '</code>';
+          }
+        }
       });
+      marked.setOptions({ breaks: true, gfm: true });
       document.getElementById('post-content').innerHTML = marked.parse(content);
-      document.querySelectorAll('pre code').forEach(function(block) { hljs.highlightElement(block); });
       initLightbox();
     });
   </script>
