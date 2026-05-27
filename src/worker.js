@@ -881,6 +881,18 @@ function getFrontendHTML(settings) {
     }
   </script>
   <script>
+    // 返回顶部
+    window.addEventListener('scroll', function() {
+      var btn = document.querySelector('.back-to-top');
+      if (btn) {
+        if (window.scrollY > 300) {
+          btn.classList.add('show');
+        } else {
+          btn.classList.remove('show');
+        }
+      }
+    });
+    
     fetch('/api/stats').then(r=>r.json()).then(s=>{
       document.getElementById('stat-posts').textContent = s.postCount;
       document.getElementById('stat-cats').textContent = s.catCount;
@@ -1121,13 +1133,20 @@ function getPostHTML(post, settings) {
     .back-to-top:hover { transform: translateY(-2px); box-shadow: 0 6px 0 0 #11a89b; }
     .back-to-top.show { display: flex; align-items: center; justify-content: center; }
     
-    .mobile-nav-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 1004; width: 40px; height: 40px; background: #19c8b9; border: none; border-radius: 12px; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 3px 0 #11a89b; }
+    .mobile-nav-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 1004; width: 40px; height: 40px; background: #19c8b9; border: none; border-radius: 12px; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 3px 0 #11a89b; transition: left 0.3s; }
+    .mobile-nav-toggle.nav-open { left: 208px !important; }
     .mobile-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
     @media (max-width: 768px) {
-      header { padding: 16px 16px 16px 56px; }
+      header { padding: 16px; text-align: center; }
       header h1 { font-size: 1.4em; }
       header p { font-size: 0.85em; }
       .mobile-nav-toggle { display: flex; align-items: center; justify-content: center; }
+      .mobile-overlay.show { display: block; }
+      main { flex-direction: row; padding: 0 12px; gap: 0; margin-top: 12px; }
+      .sidebar { width: 220px; position: fixed; top: 0; left: -220px; height: 100vh; z-index: 1002; transition: left 0.3s ease; overflow-y: auto; background: #f8f8f0; padding: 16px; box-shadow: 2px 0 8px rgba(0,0,0,0.1); }
+      .sidebar.open { left: 0; }
+      .profile-card { border-radius: 16px; padding: 16px; }
+      .profile-card .avatar { width: 56px; height: 56px; }
       .mobile-overlay.show { display: block; }
       main { flex-direction: row; padding: 0 12px; gap: 0; margin-top: 12px; position: relative; }
       .sidebar { width: 260px; position: fixed; top: 0; left: -260px; height: 100vh; z-index: 1000; transition: left 0.3s ease; overflow-y: auto; background: #f8f8f0; padding: 16px; box-shadow: 2px 0 8px rgba(0,0,0,0.1); }
