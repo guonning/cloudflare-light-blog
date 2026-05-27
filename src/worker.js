@@ -762,6 +762,25 @@ function getFrontendHTML(settings) {
     .profile-card .category-list a, .profile-card .link-list a { display: block; padding: 8px 12px; margin: 0 0 6px 0; color: #725d42; text-decoration: none; background: #f0e8d8; border-radius: 12px; font-size: 0.85em; font-weight: 600; transition: all 0.2s; border: 2px solid transparent; }
     .profile-card .category-list a:hover, .profile-card .link-list a:hover { background: #e6f9f6; border-color: #19c8b9; color: #11a89b; }
     footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 44px;
+      height: 44px;
+      background: #19c8b9;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 0 #11a89b;
+      transition: all 0.25s;
+      display: none;
+      z-index: 998;
+    }
+    .back-to-top:hover { transform: translateY(-2px); box-shadow: 0 6px 0 0 #11a89b; }
+    .back-to-top.show { display: flex; align-items: center; justify-content: center; }
     
     .mobile-nav-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 1004; width: 40px; height: 40px; background: #19c8b9; border: none; border-radius: 12px; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 3px 0 #11a89b; transition: left 0.3s; }
     .mobile-nav-toggle.nav-open { left: 208px !important; }
@@ -824,9 +843,35 @@ function getFrontendHTML(settings) {
       <p style="text-align:center;color:#9f927d;">加载中...</p>
     </div>
   </main>
+  <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
   <footer>${settings.site_footer || '&copy; 2026 ' + siteName}</footer>
   ${settings.custom_js ? '<script>' + settings.custom_js + '<\/script>' : ''}
   <script>
+    // 返回顶部
+    window.addEventListener('scroll', function() {
+      var btn = document.querySelector('.back-to-top');
+      if (btn) {
+        if (window.scrollY > 300) {
+          btn.classList.add('show');
+        } else {
+          btn.classList.remove('show');
+        }
+      }
+    });
+    
+    // 返回顶部
+    window.addEventListener('scroll', function() {
+      var btn = document.querySelector('.back-to-top');
+      if (btn) {
+        if (window.scrollY > 300) {
+          btn.classList.add('show');
+        } else {
+          btn.classList.remove('show');
+        }
+      }
+    });
+    
     function toggleNav() {
       var sidebar = document.querySelector('.sidebar');
       var btn = document.querySelector('.mobile-nav-toggle');
@@ -853,6 +898,30 @@ function getFrontendHTML(settings) {
         list.innerHTML = links.map(l=>'<a href="'+l.url+'" target="_blank">'+l.name+'</a>').join('');
       }
     });
+    // 返回顶部
+    window.addEventListener('scroll', function() {
+      var btn = document.querySelector('.back-to-top');
+      if (btn) {
+        if (window.scrollY > 300) {
+          btn.classList.add('show');
+        } else {
+          btn.classList.remove('show');
+        }
+      }
+    });
+    
+    // 返回顶部
+    window.addEventListener('scroll', function() {
+      var btn = document.querySelector('.back-to-top');
+      if (btn) {
+        if (window.scrollY > 300) {
+          btn.classList.add('show');
+        } else {
+          btn.classList.remove('show');
+        }
+      }
+    });
+    
     function toggleNav() {
       var sidebar = document.querySelector('.sidebar');
       var btn = document.querySelector('.mobile-nav-toggle');
@@ -1035,6 +1104,25 @@ function getPostHTML(post, settings) {
     .back-link:hover { transform: translateY(-1px); box-shadow: 0 5px 0 0 #11a89b; }
     .back-link:active { transform: translateY(2px); box-shadow: 0 1px 0 0 #11a89b; }
     footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
+    .back-to-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 44px;
+      height: 44px;
+      background: #19c8b9;
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 0 #11a89b;
+      transition: all 0.25s;
+      display: none;
+      z-index: 998;
+    }
+    .back-to-top:hover { transform: translateY(-2px); box-shadow: 0 6px 0 0 #11a89b; }
+    .back-to-top.show { display: flex; align-items: center; justify-content: center; }
     
     .mobile-nav-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 1004; width: 40px; height: 40px; background: #19c8b9; border: none; border-radius: 12px; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 3px 0 #11a89b; }
     .mobile-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
@@ -1108,6 +1196,8 @@ function getPostHTML(post, settings) {
       </article>
     </div>
   </main>
+  <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <button class="back-to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
   <footer>${settings.site_footer || '&copy; 2026 ' + siteName}</footer>
   ${settings.custom_js ? '<script>' + settings.custom_js + '<\/script>' : ''}
   <script>
