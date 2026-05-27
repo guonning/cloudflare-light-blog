@@ -1232,15 +1232,14 @@ function getPostHTML(post, settings) {
       display: none;
       align-items: center;
       justify-content: center;
-      cursor: zoom-out;
     }
     .lightbox.active { display: flex; }
     .lightbox img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 12px;
+      max-width: 85%;
+      max-height: 85%;
+      border: 4px solid #555;
+      border-radius: 8px;
       box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-      cursor: default;
     }
     .lightbox-close {
       position: absolute;
@@ -1257,8 +1256,40 @@ function getPostHTML(post, settings) {
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 1;
     }
     .lightbox-close:hover { background: rgba(255,255,255,0.3); }
+    .lightbox-prev, .lightbox-next {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+    .lightbox-prev { left: 20px; }
+    .lightbox-next { right: 20px; }
+    .lightbox-prev:hover, .lightbox-next:hover { background: rgba(255,255,255,0.3); }
+    .lightbox-counter {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #fff;
+      font-size: 14px;
+      background: rgba(0,0,0,0.5);
+      padding: 6px 16px;
+      border-radius: 20px;
+    }
     .post-article img { cursor: zoom-in; transition: transform 0.2s; }
     .post-article img:hover { transform: scale(1.02); }
     .back-to-top {
