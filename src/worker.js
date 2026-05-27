@@ -759,8 +759,9 @@ function getFrontendHTML(settings) {
     .profile-card .stat-num { font-size: 1.1em; font-weight: 800; color: #19c8b9; }
     .profile-card .stat-label { font-size: 0.75em; color: #9f927d; font-weight: 600; }
     .profile-card h4 { font-size: 0.85em; color: #9f927d; margin: 14px 0 8px; font-weight: 700; letter-spacing: 0.5px; }
-    .profile-card .category-list a, .profile-card .link-list a { display: block; padding: 8px 12px; margin: 0 0 6px 0; color: #725d42; text-decoration: none; background: #f0e8d8; border-radius: 12px; font-size: 0.85em; font-weight: 600; transition: all 0.2s; border: 2px solid transparent; }
+    .profile-card .category-list a, .profile-card .link-list a { display: block; padding: 8px 12px; margin: 0 0 6px 0; color: #725d42; text-decoration: none; background: #f0e8d8; border-radius: 12px; font-size: 0.85em; font-weight: 600; transition: all 0.2s; border: 2px solid transparent; outline: none; }
     .profile-card .category-list a:hover, .profile-card .link-list a:hover { background: #e6f9f6; border-color: #19c8b9; color: #11a89b; }
+    .profile-card .category-list a:focus, .profile-card .link-list a:focus { outline: none; background: #f0e8d8; border-color: transparent; }
     footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
     .back-to-top {
       position: fixed;
