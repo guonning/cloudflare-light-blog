@@ -763,8 +763,8 @@ function getFrontendHTML(settings) {
     .profile-card .category-list a:hover, .profile-card .link-list a:hover { background: #e6f9f6; border-color: #19c8b9; color: #11a89b; }
     footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
     
-    .mobile-nav-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 1001; width: 40px; height: 40px; background: #19c8b9; border: none; border-radius: 12px; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 3px 0 #11a89b; transition: left 0.3s; }
-    .mobile-nav-toggle.nav-open { left: 224px !important; }
+    .mobile-nav-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 1004; width: 40px; height: 40px; background: #19c8b9; border: none; border-radius: 12px; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 3px 0 #11a89b; transition: left 0.3s; }
+    .mobile-nav-toggle.nav-open { left: 208px !important; }
     .mobile-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
     @media (max-width: 768px) {
       header { padding: 16px; text-align: center; }
@@ -1036,7 +1036,7 @@ function getPostHTML(post, settings) {
     .back-link:active { transform: translateY(2px); box-shadow: 0 1px 0 0 #11a89b; }
     footer { text-align: center; padding: 30px 20px; color: #9f927d; font-size: 0.85em; font-weight: 500; }
     
-    .mobile-nav-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 1001; width: 40px; height: 40px; background: #19c8b9; border: none; border-radius: 12px; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 3px 0 #11a89b; }
+    .mobile-nav-toggle { display: none; position: fixed; top: 12px; left: 12px; z-index: 1004; width: 40px; height: 40px; background: #19c8b9; border: none; border-radius: 12px; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 3px 0 #11a89b; }
     .mobile-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
     @media (max-width: 768px) {
       header { padding: 16px 16px 16px 56px; }
