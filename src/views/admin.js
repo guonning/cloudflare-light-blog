@@ -188,23 +188,23 @@ export function getAdminHTML() {
             <table style="width:100%;border-collapse:collapse">
               <thead>
                 <tr style="background:#f0e8d8">
-                  <th style="padding:12px 16px;text-align:left;color:#794f27;font-weight:700;font-size:13px;width:70px;white-space:nowrap">删除</th>
-                  <th style="padding:12px 16px;text-align:left;color:#794f27;font-weight:700;font-size:13px;width:70px;white-space:nowrap">编辑</th>
-                  <th style="padding:12px 16px;text-align:left;color:#794f27;font-weight:700;font-size:13px">文章标题</th>
-                  <th style="padding:12px 16px;text-align:left;color:#794f27;font-weight:700;font-size:13px;width:100px">分类</th>
-                  <th style="padding:12px 16px;text-align:center;color:#794f27;font-weight:700;font-size:13px;width:80px">状态</th>
-                  <th style="padding:12px 16px;text-align:right;color:#794f27;font-weight:700;font-size:13px;width:120px">发布日期</th>
+                  <th style="padding:12px 16px;text-align:center;color:#794f27;font-weight:700;font-size:14px;width:70px;white-space:nowrap">删除</th>
+                  <th style="padding:12px 16px;text-align:center;color:#794f27;font-weight:700;font-size:14px;width:70px;white-space:nowrap">编辑</th>
+                  <th style="padding:12px 16px;text-align:left;color:#794f27;font-weight:700;font-size:14px">文章标题</th>
+                  <th style="padding:12px 16px;text-align:left;color:#794f27;font-weight:700;font-size:14px;width:100px">分类</th>
+                  <th style="padding:12px 16px;text-align:center;color:#794f27;font-weight:700;font-size:14px;width:100px">状态</th>
+                  <th style="padding:12px 16px;text-align:right;color:#794f27;font-weight:700;font-size:14px;width:120px">发布日期</th>
                 </tr>
               </thead>
               <tbody>
                 <template v-for="post in posts" :key="post.id">
                   <tr style="border-top:1px solid #e8e0cc">
-                    <td style="padding:10px 16px;white-space:nowrap"><button class="delete" @click="deletePost(post.id)" style="padding:5px 14px;border:none;border-radius:50px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap">删除</button></td>
-                    <td style="padding:10px 16px;white-space:nowrap"><button class="edit" @click="toggleEdit(post)" style="padding:5px 14px;border:none;border-radius:50px;font-size:12px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap">{{editingId===post.id?'收起':'编辑'}}</button></td>
-                    <td style="padding:10px 16px;color:#794f27;font-weight:600;font-size:14px;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{post.title}}</td>
-                    <td style="padding:10px 16px;color:#9f927d;font-size:13px">{{post.category}}</td>
-                    <td style="padding:10px 16px;text-align:center;white-space:nowrap"><span :style="{display:'inline-block',width:'8px',height:'8px',borderRadius:'50%',background:post.status==='published'?'#22c55e':'#9f927d',marginRight:'6px',verticalAlign:'middle'}"></span><span style="font-size:13px;color:#725d42;verticalAlign:'middle'">{{post.status==='published'?'已发布':'草稿'}}</span></td>
-                    <td style="padding:10px 16px;text-align:right;color:#9f927d;font-size:13px">{{new Date(post.published_at || post.created_at).toLocaleDateString('zh-CN')}}</td>
+                    <td style="padding:10px 16px;text-align:center;white-space:nowrap"><button class="delete" @click="deletePost(post.id)" style="padding:5px 14px;border:none;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap">删除</button></td>
+                    <td style="padding:10px 16px;text-align:center;white-space:nowrap"><button class="edit" @click="toggleEdit(post)" style="padding:5px 14px;border:none;border-radius:50px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;white-space:nowrap">{{editingId===post.id?'收起':'编辑'}}</button></td>
+                    <td style="padding:10px 16px;color:#794f27;font-weight:600;font-size:15px;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{post.title}}</td>
+                    <td style="padding:10px 16px;color:#9f927d;font-size:14px">{{post.category}}</td>
+                    <td style="padding:10px 16px;text-align:center;white-space:nowrap"><span :style="{display:'inline-block',width:'8px',height:'8px',borderRadius:'50%',background:post.status==='published'?'#22c55e':'#9f927d',marginRight:'6px',verticalAlign:'middle'}"></span><span style="font-size:14px;color:#725d42;vertical-align:middle">{{post.status==='published'?'已发布':'草稿'}}</span></td>
+                    <td style="padding:10px 16px;text-align:right;color:#9f927d;font-size:14px">{{new Date(post.published_at || post.created_at).toLocaleDateString('zh-CN')}}</td>
                   </tr>
                   <tr v-if="editingId===post.id">
                     <td colspan="6" style="padding:20px 16px;background:#faf8f2;border-top:2px solid #e8e0cc">
