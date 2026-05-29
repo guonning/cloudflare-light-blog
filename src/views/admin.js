@@ -114,51 +114,144 @@ export function getAdminHTML() {
     .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(107,92,67,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
     .modal-box { background: #f7f3df; border-radius: 20px; padding: 32px; max-width: 400px; width: 90%; border: 2px solid #e8e0cc; }
     .toast { position: fixed; bottom: 20px; right: 20px; padding: 16px 24px; background: #6fba2c; color: #fff; border-radius: 50px; font-weight: 600; }
-    @media (max-width: 768px) {
+    /* ========== 平板端 (768px - 1024px) ========== */
+    @media (min-width: 769px) and (max-width: 1024px) {
       .admin-layout { flex-direction: column; }
-      .sidebar { 
-        width: 100%; 
-        flex-direction: row; 
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
         overflow-x: auto;
         padding: 0;
+        flex-shrink: 0;
       }
-      .sidebar-header { 
-        padding: 12px 16px; 
+      .sidebar-header {
+        padding: 12px 16px;
         white-space: nowrap;
+        display: flex;
+        align-items: center;
       }
       .sidebar-header h1 { font-size: 16px; }
-      .sidebar-menu { 
-        display: flex; 
-        padding: 8px 12px; 
-        gap: 6px; 
+      .sidebar-menu {
+        display: flex;
+        padding: 8px 12px;
+        gap: 6px;
         flex-wrap: nowrap;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex: 1;
       }
-      .sidebar-menu a { 
-        white-space: nowrap; 
-        padding: 8px 14px; 
-        margin: 0; 
-        font-size: 13px;
+      .sidebar-menu a {
+        white-space: nowrap;
+        padding: 10px 16px;
+        margin: 0;
+        font-size: 14px;
         border-radius: 10px;
       }
-      .sidebar-footer { 
-        padding: 8px 12px; 
-        white-space: nowrap;
-      }
-      .sidebar-footer button { 
+      .sidebar-footer {
         padding: 8px 16px;
-        font-size: 13px;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
       }
-      .main-content { padding: 16px; }
-      .page-header h2 { font-size: 1.3em; }
-      .card { padding: 16px; border-radius: 16px; }
+      .sidebar-footer button {
+        padding: 8px 18px;
+        font-size: 14px;
+      }
+      .main-content { padding: 20px; }
+      .page-header h2 { font-size: 1.4em; }
+      .card { padding: 20px; border-radius: 18px; }
+      .editor-layout { flex-direction: column; }
+      .editor-main, .editor-side { width: 100%; }
+      .form-row { grid-template-columns: 1fr 1fr; }
+      table { font-size: 14px; }
+      th, td { padding: 12px 14px !important; }
+    }
+
+    /* ========== 手机端 (≤768px) ========== */
+    @media (max-width: 768px) {
+      .admin-layout { flex-direction: column; }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 0;
+        flex-shrink: 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .sidebar-header {
+        padding: 10px 12px;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+      }
+      .sidebar-header h1 { font-size: 15px; }
+      .sidebar-menu {
+        display: flex;
+        padding: 6px 8px;
+        gap: 4px;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex: 1;
+      }
+      .sidebar-menu a {
+        white-space: nowrap;
+        padding: 8px 12px;
+        margin: 0;
+        font-size: 12px;
+        border-radius: 8px;
+      }
+      .sidebar-footer {
+        padding: 6px 10px;
+        white-space: nowrap;
+        display: flex;
+        align-items: center;
+      }
+      .sidebar-footer button {
+        padding: 6px 14px;
+        font-size: 12px;
+      }
+      .main-content { padding: 12px; }
+      .page-header { margin-bottom: 12px; }
+      .page-header h2 { font-size: 1.2em; }
+      .card { padding: 14px; border-radius: 14px; margin-bottom: 12px; }
+      .btn { padding: 10px 20px; font-size: 14px; }
+      .btn-cancel { padding: 10px 20px; font-size: 14px; }
       .editor-layout { flex-direction: column; }
       .editor-main, .editor-side { width: 100%; }
       .form-row { grid-template-columns: 1fr; }
+      .form-group { margin-bottom: 14px; }
+      .form-group label { font-size: 14px; margin-bottom: 6px; }
+      .form-group input, .form-group textarea, .form-group select { font-size: 15px; padding: 12px 16px; }
+      .custom-select-trigger { font-size: 14px; padding: 12px 16px; min-height: 44px; }
+      .custom-select-option { padding: 12px 16px; font-size: 14px; }
+      /* 表格横向滚动 */
+      .card[style*="padding:0"] { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      table { min-width: 600px; font-size: 13px; }
+      th { font-size: 13px !important; padding: 10px 12px !important; }
+      td { font-size: 13px !important; padding: 10px 12px !important; }
+      /* 封面图区域 */
+      .cover-upload { min-height: 60px; }
+      /* 自定义下拉 */
+      .custom-select-dropdown { max-height: 200px; }
+    }
       .btn { padding: 10px 20px; font-size: 14px; }
       .custom-select-dropdown { max-height: 150px; }
     }
-  </style>
+  
+    /* ========== 手机端宽度自适应 ========== */
+    @media (max-width: 768px) {
+      [style*="width:33.33%"],
+      [style*="width:66.66%"],
+      [style*="width:50%"] { width: 100% !important; }
+    }
+    @media (min-width: 769px) and (max-width: 1024px) {
+      [style*="width:33.33%"] { width: 50% !important; }
+      [style*="width:66.66%"] { width: 100% !important; }
+    }
+</style>
 </head>
 <body>
   <div id="app">
