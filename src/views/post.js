@@ -383,7 +383,22 @@ export function getPostHTML(post, settings) {
       document.querySelectorAll('.post-article img').forEach(function(img) { img.setAttribute('loading', 'lazy'); });
     });
   </script>
-  ${settings.custom_js || ''}
+  <script>
+  (function(){
+    var s = ${(JSON.stringify(settings.custom_js || ''))};
+    if(s && s.trim()){
+      var d=document.createElement('div');d.innerHTML=s;
+      var scripts=d.querySelectorAll('script');
+      scripts.forEach(function(old){
+        var n=document.createElement('script');
+        for(var i=0;i<old.attributes.length;i++)n.setAttribute(old.attributes[i].name,old.attributes[i].value);
+        if(old.textContent)n.textContent=old.textContent;
+        document.body.appendChild(n);
+      });
+      if(!scripts.length)document.body.appendChild(d);
+    }
+  })();
+  </script>
 </body>
 </html>`;
 }
