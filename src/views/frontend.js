@@ -210,9 +210,9 @@ export function getFrontendHTML(settings) {
           var tags = post.tags ? post.tags.split(',').map(function(t) {
             return '<span style="display:inline-block;padding:3px 10px;background:#e6f5f0;color:#3a7a6a;font-size:0.72em;font-weight:700;margin-right:8px;border:1px solid #b8ddd0;border-radius:4px;box-shadow:1px 2px 3px rgba(58,122,106,0.12)">' + t.trim() + '</span>';
           }).join('') : '';
-          function stripHtml(str) { return str ? str.split('<').join('').split('>').join('').split('&lt;').join('<').split('&gt;').join('>').split('&amp;').join('&').substring(0, 100) : ''; }
+          function stripHtml(str) { return str ? str.split('<').join('').split('>').join('').split('&lt;').join('<').split('&gt;').join('>').split('&amp;').join('&').substring(0, 120) : ''; }
           var rawText = post.excerpt || post.content || '';
-          var excerpt = post.password ? '🔒 该文章受到密码保护' : stripHtml(rawText) + (rawText.length > 100 ? '...' : '');
+          var excerpt = post.password ? '🔒 该文章受到密码保护' : stripHtml(rawText) + (rawText.length > 120 ? '...' : '');
           return '<article class="post-card">' +
             '<div class="post-content">' +
               '<h2><a href="/post/' + formatDate(post.created_at) + '/' + post.id + '">' + post.title + '</a></h2>' +
