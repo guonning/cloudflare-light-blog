@@ -214,7 +214,6 @@ export function getFrontendHTML(settings) {
           var rawText = post.excerpt || post.content || '';
           var excerpt = post.password ? '🔒 该文章受到密码保护' : stripHtml(rawText) + (rawText.length > 80 ? '...' : '');
           return '<article class="post-card">' +
-            '<div class="post-cover">' + cover + '</div>' +
             '<div class="post-content">' +
               '<h2><a href="/post/' + formatDate(post.created_at) + '/' + post.id + '">' + post.title + '</a></h2>' +
               '<p style="color:#725d42;font-size:0.9em;line-height:1.7;margin:8px 0">' + excerpt + '</p>' +
