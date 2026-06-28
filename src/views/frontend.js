@@ -121,7 +121,7 @@ export function getFrontendHTML(settings) {
           <div class="stat-item"><div id="stat-tags" class="stat-num">-</div><div class="stat-label">标签</div></div>
         </div>
         <div style="font-size:0.78em;color:#9f927d;margin-bottom:14px;line-height:1.8">
-          <div>建站时间：<span id="site-created">${(function(d){return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'})(new Date(settings.site_created_at || '2020-02-02'))}</span></div>
+          <div>建站时间：<span id="site-created">${(function(d){return d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'})(new Date(settings.site_created_at || '2026-06-16'))}</span></div>
           <div>最后更新：<span id="site-updated">-</span></div>
         </div>
         <h4>📂 分类</h4>
